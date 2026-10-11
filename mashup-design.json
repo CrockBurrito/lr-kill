@@ -1,0 +1,78 @@
+{
+  "project": {
+    "oneLine": "Normal Minecraft: Java Edition where the only change is ULTRAKILL's movement, mechanics, style and blood-based health, with ULTRAKILL-style explosions that Minecraft reacts to.",
+    "players": "solo (v1)",
+    "license": "MIT",
+    "remixAllowed": true,
+    "melty": {
+      "primary": "minecraft-java",
+      "companion": "ultrakill",
+      "together": false,
+      "loader": "fabric (portable Prism Launcher instance, mmc-pack.json names Fabric; see SkyCraft via mashup_info)",
+      "note": "ULTRAKILL sounds/art are read at runtime from {game:ultrakill}, never copied or shipped."
+    }
+  },
+  "sheets": {
+    "movement": {
+      "columns": ["id", "input", "behavior", "cooldown_s", "stamina_cost", "verified"],
+      "rows": [
+        ["dash", "Shift", "Short fast burst in look/move direction, brief i-frames", 0, 1, false],
+        ["slide", "Ctrl (sprinting)", "Low fast slide, keeps momentum, shrinks hitbox", 0, 0, false],
+        ["wall_jump", "Space near wall", "Jump off wall, limited count, refilled on ground", 0, 0, false],
+        ["slam", "Ctrl (airborne)", "Fast drop, impact shockwave on landing", 0, 0, false]
+      ]
+    },
+    "health": {
+      "columns": ["id", "behavior", "value", "verified"],
+      "rows": [
+        ["max_hp", "Replaces hearts with a blood bar", 100, false],
+        ["hard_damage", "Part of damage taken is 'hard' and can only be healed by blood", 0.5, false],
+        ["blood_heal", "Damaging/killing mobs makes them bleed; touching blood heals up to the hard-damage limit", 1, false]
+      ]
+    },
+    "style": {
+      "columns": ["id", "trigger", "points", "verified"],
+      "rows": [
+        ["airtime", "Moving fast off the ground", 5, false],
+        ["parry", "Successful parry", 100, false],
+        ["explosion_kill", "Kill via explosion", 50, false],
+        ["rank_ladder", "D/C/B/A/S/SS/SSS meter, decays when idle", 0, false]
+      ]
+    },
+    "mobs": {
+      "columns": ["id", "minecraft_mob", "bleeds", "parriable", "parry_window_s", "parry_effect", "verified"],
+      "rows": [
+        ["zombie", "minecraft:zombie", true, false, 0, "", false],
+        ["skeleton_arrow", "minecraft:skeleton", true, true, 0.2, "Reflect arrow, heal", false],
+        ["creeper", "minecraft:creeper", true, true, 0.2, "Punch creeper away, detonate early", false],
+        ["blaze_fireball", "minecraft:blaze", true, true, 0.2, "Reflect fireball", false],
+        ["ghast_fireball", "minecraft:ghast", true, true, 0.25, "Reflect fireball at ghast", false]
+      ]
+    },
+    "explosions": {
+      "columns": ["id", "source", "radius", "block_damage", "knockback", "mob_damage", "self_damage", "sound", "verified"],
+      "rows": [
+        ["rocket_small", "projectile hit", 3, true, 1.5, 20, 0, "ultrakill:explosion_small", false],
+        ["rocket_big", "slam / parried fireball", 6, true, 3, 60, 0, "ultrakill:explosion_big", false],
+        ["creeper_parry", "parried creeper", 5, true, 2.5, 40, 0, "ultrakill:explosion_small", false]
+      ],
+      "rules": "Minecraft must react fully: blocks break per Minecraft rules (drops, tile entities), entities take damage and knockback, items and falling blocks are thrown, fires and TNT chain correctly, no desync."
+    },
+    "hooks": {
+      "columns": ["id", "minecraft_system", "approach", "verified"],
+      "rows": [
+        ["player_movement", "Player tick / velocity", "Fabric mixin on player movement", false],
+        ["hud", "Health and hunger bars", "Replace with blood bar and style meter HUD", false],
+        ["damage", "LivingEntity.damage", "Mixin to split soft/hard damage", false],
+        ["projectiles", "Projectile entities", "Detect parry hit, reflect, apply explosion", false],
+        ["explosions", "World explosion API", "Custom explosion with ULTRAKILL params", false],
+        ["audio", "SoundManager", "Load sounds from ultrakill folder at runtime (companion)", false]
+      ]
+    }
+  },
+  "buildNotes": [
+    "Preflight: every row/column must be filled and every reference resolve before building.",
+    "Companion read: ULTRAKILL is Unity; read audio/art from the Unity bundles in {game:ultrakill} at runtime with a Unity asset reader. Nothing from ULTRAKILL is copied into the mod or upload.",
+    "Melty steps: game_info on both games, search_mashups, mashup_info skycraft, inspect_package, validate_recipe, one_click_check, create_mod, upload, submit_release, screenshot, test_release, then ask before publish."
+  ]
+}
